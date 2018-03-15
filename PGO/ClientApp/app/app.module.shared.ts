@@ -4,6 +4,7 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Headers, RequestOptions, BaseRequestOptions } from '@angular/http';
+
 import { APP_BASE_HREF, CommonModule, Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 // third party module to display toast 
 import { ToastrModule } from 'toastr-ng2';
