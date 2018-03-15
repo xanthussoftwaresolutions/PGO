@@ -1,0 +1,230 @@
+﻿<div class="panel">
+    <div class="row">
+        <div class="col-lg-1 col-md-1 col-sm-2 col-xs-3">
+            <div id="navi">
+                <wj-flex-sheet #formulaSheet1 (initialized)="formulaSheetCss(formulaSheet1)">
+                    <wj-sheet name="Expence Report" [rowCount]="MenuRowCount" [columnCount]="1" (keydown)=onFlexKeyPress(formulaSheet1,$event)>
+                    </wj-sheet>
+                </wj-flex-sheet>
+            </div>
+            <div id="infoi">
+                <div style="margin-top: 32px; margin-left:28px;">
+                    <button class="btn btn-primary" (click)="saveStatic(flexSheet)">Save</button>
+                </div>
+                <div style="margin-top: 15px;" id="catDiv" #catDiv>
+                    <div #catDivInner id="catDivInner">
+                        <tree-root #tree [nodes]="nodes11" [focused]="true" [options]="options" (initialized)="treeInit(tree)">
+                            <ng-template #treeNodeTemplate let-node let-index="index">
+                                <span  [contextMenu]="basicMenu" [contextMenuSubject]="node" data-toggle="tooltip" data-placement="top" title="{{node.data.name}}">{{ node.data.name|slice:0:7}}</span>
+                            </ng-template>
+                        </tree-root>
+                        <context-menu #basicMenu>
+                            <template contextMenuItem let-item>
+                                <button *ngIf="item.data.id == 1 || item.data.id == 100" (click)="openPopup(tree,item)">Add Category</button>
+                                <button *ngIf="item.parent.data.id == 1 || item.parent.data.id == 100" (click)="removeNode(tree,item)">Delete Category</button>
+                                <button>Cancel</button>
+                            </template>
+                        </context-menu>
+
+                        <context-menu #GrowthRateMenu>
+                            <template contextMenuItem let-item>
+                                <button *ngIf="item.data.id == 1 || item.data.id == 100" (click)="openPopup(tree,item)">Add Category</button>
+                            </template>
+                        </context-menu>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-11 col-md-11 col-sm-10 col-xs-9">
+            <wj-flex-sheet #flexSheet class="flexSheet" (initialized)="formulaSheetInit(flexSheet)">
+                <wj-sheet name="Expense Report" [rowCount]="RowCount" [columnCount]="157"></wj-sheet>
+            </wj-flex-sheet>
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal" *ngIf="edited">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close btn btn-danger wj-hide" (click)="closePopup(popup)">&times;</span>
+            <h4 class="modal-title text-center"><b><u>Add/Change Category</u></b></h4>
+        </div>
+
+        <div class="modal-body">
+            <div class="ContentPane">
+                <div class="col-lg-12">
+                    <label for="CategoryName" class="col-md-2 col-form-label">Category Name</label>
+                    <div>
+                        <input type="text" class="col-md-4 form-control search" #_Category id="CategoryName" [(ngModel)]="CategoryName" placeholder="Enter Category Name" maxlength="10">
+                    </div>
+                    <div class="col-md-offset-6"></div>
+                </div>
+                <hr />
+                <div class="col-lg-12">
+                    <div class="col-lg-6">
+                        <div class="ProjectionMethod">
+                            <div class="form-group row">
+                                <div class="col-sm-4">Projection Method</div>
+                                <div class="col-sm-8">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="EntryType" id="ManualEntry" value="ManualEntry" [(ngModel)]="EntryType" (click)="HidePopupCategory()">
+                                        <label class="form-check-label" for="ManualEntry">
+                                            Manual Entry
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="EntryType" id="Percentage" value="Percentage" [(ngModel)]="EntryType" (click)="ShowPercentCategory()">
+                                        <label class="form-check-label" for="Percentage">
+                                            % Of Other Categories
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="EntryType" id="GrowthRate" value="GrowthRate" [(ngModel)]="EntryType" (click)="ShowGrowthRateCategory()">
+                                        <label class="form-check-label" for="GrowthRate">
+                                            Growth Rate
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="GrowthRateMethod" *ngIf="isGrowthRate">
+                            <div class="form-group row">
+                                <fieldset>
+                                    <div class="col-sm-4">Base To Grow</div>
+                                    <legend>Method Options</legend>
+                                    <div class="col-sm-8">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="LastYearSamePeriod" name="EntryLastYear" value="LastYearSamePeriod" (change)="changePriorPeriod()" [(ngModel)]="EntryLastYear">
+                                            <label class="form-check-label" for="LastYearSamePeriod">
+                                                Last year Same Period
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="ImmediatePrior" name="EntryLastYear" value="ImmediatePrior" (change)="changePriorPeriod()" [(ngModel)]="EntryLastYear">
+                                            <label class="form-check-label" for="ImmediatePrior">
+                                                Immediate Prior Period
+                                            </label>
+                                        </div>
+                                        <hr />
+                                        <div class="form-group">
+                                            <label class="col-sm-12 col-form-label" for="GrowthRate">
+                                                Start Growth Over
+                                            </label>
+                                            <select class="col-sm-12 form-control" *ngIf="EntryLastYear=='ImmediatePrior'" id="Id" #Id="ngModel" [(ngModel)]="growthRate" name="Id" (change)="changePriorPeriod()">
+                                                <option [ngValue]="k" *ngFor="let k of StartGrowthOver">
+                                                    {{k.name == 'Jan 2018' ? 'First prior historical period' : k.name}}
+                                                </option>
+                                            </select>
+                                            <select class="col-sm-12 form-control" id="GrowthRate" *ngIf="EntryLastYear=='LastYearSamePeriod'" [(ngModel)]="growthRateLYSP" name="Id" (change)="changePriorPeriod()">
+                                                <option [ngValue]="k" *ngFor="let k of StartLastYearSP">
+                                                    {{k.name == '2018' ? 'January 2018' : k.name}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </fieldset>
+
+                            </div>
+                        </div>
+                        <div class="PercentMethod" *ngIf="isPercent">
+                            <div class="form-group row">
+                                <fieldset>
+                                    <legend>Method Options</legend>
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <span> Period Use</span>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input class="form-check-input" type="radio" id="Current" name="EntryPrior" value="Current" [(ngModel)]="EntryPrior">
+                                                <label for="Current">Current</label>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input class="form-check-input" type="radio" id="Prior" name="EntryPrior" value="Prior" [(ngModel)]="EntryPrior">
+                                                <label for="Prior">Prior</label>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <input class="form-check-input" type="radio" id="SubseQuent" name="EntryPrior" value="SubseQuent" [(ngModel)]="EntryPrior">
+                                                <label for="SubseQuent">Subsequent</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 PercentExpand">
+                                        <div class="row" style="margin-top: 15px;height:150px">
+                                            <tree-root #treePercent [nodes]="nodesPerCat" [focused]="true" [options]="percenTreeOptions">
+                                                <ng-template #treeNodeTemplate let-node let-index="index">
+                                                    <input type="checkbox" [contextMenu]="advanceMenu" [contextMenuSubject]="nodePer" [(ngModel)]="node.data.ischecked" />
+                                                    <span [contextMenu]="advanceMenu" [contextMenuSubject]="nodePer">{{ node.data.name }}</span>
+                                                </ng-template>
+                                            </tree-root>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="GrowthRateGrid" *ngIf="isGrowthRate">
+                            <div class="text-center">
+                                <h6>Enter Growth Rate</h6>
+                                <wj-flex-sheet style="height:260px; width:250px" #growthRateSheet (initialized)="growthRateSheetInit(growthRateSheet,confirmtemp)">
+                                    <wj-sheet name="Expence Report" [rowCount]="6" [columnCount]="2"></wj-sheet>
+                                </wj-flex-sheet>
+
+                            </div>
+                        </div>
+                        <div class="row PercentageGrid" *ngIf="isPercent">
+                            <div class="text-center">
+                                <h6>Period Percent Data</h6>
+                                <wj-flex-sheet style="height:260px; width:250px" #percentRateSheet (initialized)="percentRateSheetInit(percentRateSheet,confirmtemp)">
+                                    <wj-sheet name="Expence Report" [rowCount]="6" [columnCount]="2"></wj-sheet>
+                                </wj-flex-sheet>
+                            </div>
+                        </div>
+
+                        <div class="row text-center">
+                            <button (click)="addNode(_Category.value,messagetemp)" class="btn btn-success">OK</button>
+                            <button class="btn btn-danger wj-hide" (click)="closePopup(popup)">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #confirmtemp>
+    <div class="modal-body text-center">
+
+        <p>Apply same amount to subsequent periods?</p>
+        <button type="button" class="btn btn-success" (click)="confirm()">Yes</button>
+        <button type="button" class="btn btn-danger" (click)="decline()">No</button>
+    </div>
+</ng-template>
+
+<ng-template #messagetemp>
+    <div class="modal-body text-center">
+        <p>please provide Category Name</p>
+        <button type="button" class="btn btn-warning" (click)="message()">OK</button>
+    </div>
+</ng-template>
+
+<ng-template #validatemessage>
+    <div class="modal-body text-center">
+        <p>Category Name already Exist</p>
+        <button type="button" class="btn btn-warning" (click)="message()">OK</button>
+    </div>
+</ng-template>
+
+
+<ng-template #percentCheckPopup>
+    <div class="modal-body text-center">
+        <p>Please Select Atleast One Category Checkbox</p>
+        <button type="button" class="btn btn-warning" (click)="message()">OK</button>
+    </div>
+</ng-template>
+
+

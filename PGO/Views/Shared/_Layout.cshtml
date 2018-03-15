@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PGO</title>
+    <link rel="stylesheet" type="text/css" href="~/resources/themes/omega/theme.css" />
+    <link rel="stylesheet" type="text/css" href="~/resources/primeng.min.css" />
+    <link href="~/resources/toastr.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/wijmo.min.css" rel="stylesheet" type="text/css" />
+    @*<link href="~/resources/styles.scss"  rel="stylesheet" type="text/css" />*@
+    <link href="~/resources/angular-tree-component.css" rel="stylesheet" type="text/css"/>
+    <base href="~/" />
+
+    <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
+</head>
+<body>
+    @RenderBody()
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

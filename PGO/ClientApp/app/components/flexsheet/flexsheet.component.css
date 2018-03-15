@@ -1,0 +1,127 @@
+/* set default grid height and some shadow */
+.wj-flexsheet {
+    height: 650px;
+    background-color: white;
+    box-shadow: 4px 4px 10px 0px rgba(50, 50, 50, 0.75);
+    margin-bottom: 12px;
+}
+
+
+
+.modal {
+    display: block; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    /*z-index: 1;*/ /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    /*top: 100px;*/
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: scroll; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 75%;
+    margin-top: -80px
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+.search {
+    width: 200px;
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+    transition: all .5s ease;
+}
+
+    .search:focus {
+        width: 300px;
+    }
+
+
+label.form-check-label, label.col-md-2.col-form-label, label {
+    font-weight: normal;
+}
+
+
+
+/*media query for devices*/
+
+/* For mobile phones: */
+/*[class*="col-"] {
+    width: 100%;
+}*/
+@media only screen and (min-width: 600px) {
+    /* For tablets: */
+
+}
+
+@media only screen and (min-width: 768px) {
+    /* For desktop: */
+
+}
+
+@media (min-width: 768px) {
+    .col-sm-3 {
+        padding-right: 0px !important;
+        padding-left: 6px !important;
+    }
+}
+
+
+@media (min-width: 1024px) and (max-height:707) {
+    .col-sm-3 {
+        padding-right: 0px;
+        padding-left: 15px;
+        font-size: 15px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .col-sm-3 {
+        padding-right: 0px;
+        padding-left: 15px;
+        font-size: 13px;
+    }
+}
+
+@media (min-width: 360px) {
+    .col-sm-8, col-sm-4 {
+        padding-right: 0;
+        padding-left: 15px;
+        font-size: 12px;
+    }
+}
+
+.ContentPane {
+    /*height:500px;*/
+    overflow-y: auto;
+}
+#catDiv {
+    height: 530px;
+    overflow: auto;
+    overflow: hidden;
+}
+#navi, #infoi{
+    left:auto;
+}

@@ -1,0 +1,111 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <IsPackable>false</IsPackable>
+    <UserSecretsId>173d3f01-bf30-467a-9f6d-0a354f95fcd8</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0-preview2-final" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
+    <Compile Remove="ClientApp\app\components\excelIO\**" />
+    <Content Remove="ClientApp\**" />
+    <EmbeddedResource Remove="ClientApp\app\components\excelIO\**" />
+    <None Remove="ClientApp\app\components\excelIO\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Remove="Properties\PublishProfiles\FolderProfile1.pubxml" />
+    <None Remove="Properties\PublishProfiles\FolderProfile2.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\resources\themes\cruze\theme.css.map" />
+    <None Include="wwwroot\resources\themes\cruze\theme.scss" />
+    <None Include="wwwroot\resources\themes\cupertino\theme.css.map" />
+    <None Include="wwwroot\resources\themes\cupertino\theme.scss" />
+    <None Include="wwwroot\resources\themes\darkness\theme.css.map" />
+    <None Include="wwwroot\resources\themes\darkness\theme.scss" />
+    <None Include="wwwroot\resources\themes\flick\theme.css.map" />
+    <None Include="wwwroot\resources\themes\flick\theme.scss" />
+    <None Include="wwwroot\resources\themes\home\theme.css.map" />
+    <None Include="wwwroot\resources\themes\home\theme.scss" />
+    <None Include="wwwroot\resources\themes\kasper\theme.css.map" />
+    <None Include="wwwroot\resources\themes\kasper\theme.scss" />
+    <None Include="wwwroot\resources\themes\lightness\theme.css.map" />
+    <None Include="wwwroot\resources\themes\lightness\theme.scss" />
+    <None Include="wwwroot\resources\themes\ludvig\theme.css.map" />
+    <None Include="wwwroot\resources\themes\ludvig\theme.scss" />
+    <None Include="wwwroot\resources\themes\omega\fonts\roboto-v15-latin-regular.svg" />
+    <None Include="wwwroot\resources\themes\omega\fonts\roboto-v15-latin-regular.woff2" />
+    <None Include="wwwroot\resources\themes\omega\theme.css.map" />
+    <None Include="wwwroot\resources\themes\omega\theme.scss" />
+    <None Include="wwwroot\resources\themes\pepper-grinder\theme.css.map" />
+    <None Include="wwwroot\resources\themes\pepper-grinder\theme.scss" />
+    <None Include="wwwroot\resources\themes\redmond\theme.css.map" />
+    <None Include="wwwroot\resources\themes\redmond\theme.scss" />
+    <None Include="wwwroot\resources\themes\rocket\theme.css.map" />
+    <None Include="wwwroot\resources\themes\rocket\theme.scss" />
+    <None Include="wwwroot\resources\themes\south-street\theme.css.map" />
+    <None Include="wwwroot\resources\themes\south-street\theme.scss" />
+    <None Include="wwwroot\resources\themes\start\theme.css.map" />
+    <None Include="wwwroot\resources\themes\start\theme.scss" />
+    <None Include="wwwroot\resources\themes\trontastic\theme.css.map" />
+    <None Include="wwwroot\resources\themes\trontastic\theme.scss" />
+    <None Include="wwwroot\resources\themes\voclain\theme.css.map" />
+    <None Include="wwwroot\resources\themes\voclain\theme.scss" />
+    <None Include="wwwroot\resources\themes\_theme.scss" />
+    <None Include="wwwroot\resources\wijmo.min.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BusinessLibrary\BusinessLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
+  <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+
+    <!-- In development, the dist files won't exist on the first run or when cloning to
+         a different machine, so rebuild them if not already present. -->
+    <Message Importance="high" Text="Performing first-run Webpack build..." />
+    <Exec Command="node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js" />
+    <Exec Command="node node_modules/webpack/bin/webpack.js" />
+  </Target>
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec Command="npm install" />
+    <Exec Command="node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod" />
+    <Exec Command="node node_modules/webpack/bin/webpack.js --env.prod" />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="wwwroot\dist\**; ClientApp\dist\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
+</Project>
